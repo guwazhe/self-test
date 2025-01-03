@@ -6,3 +6,6 @@ curl_cffi
 python-multipart
 brotli
 zstandard
+requests
+python-telegram-bot
+pygame
