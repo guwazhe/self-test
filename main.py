@@ -14,8 +14,8 @@ from loguru import logger
 from datetime import datetime
 from urllib.parse import quote
 from requests.exceptions import JSONDecodeError
-from pygame import mixer
 os.makedirs("static", exist_ok=True)
+os.makedirs("ocr", exist_ok=True)
 cache = {}
 global input_token, input_chatid, username, email
 config_file = 'static/config.json'
@@ -177,12 +177,10 @@ def start_task(input_email: str):
                                 print("未知500错误信息!")#调试输出
                                 with open(log_file, "w") as f:
                                     json.dump(content, f)
-                                play_music()
                         else:
                             if resp.status_code == 200:
                                 logger.success(f"账户 {username} 已成功创建!")
                                 username, email = save_account()
-                                play_music()
                                 asyncio.run(send_message(f"Success!\nEmail: {input_email}\nUserName: {username}"))
                                 with open(log_file, "w") as f:
                                     json.dump(content, f)
@@ -190,7 +188,6 @@ def start_task(input_email: str):
                             else:
                                 print("未知200信息!")#调试输出
                                 username, email = save_account()
-                                play_music()
                                 asyncio.run(send_message(f"Success!\nEmail: {input_email}\nUserName: {username}"))
                                 with open(log_file, "w") as f:
                                     json.dump(content, f)
