@@ -18,8 +18,6 @@ from pygame import mixer
 import threading
 import shutil
 global input_token, input_chatid, input_email
-os.makedirs("static", exist_ok=True)
-os.makedirs("ocr", exist_ok=True)
 config_file = 'static/config.json'
 account_file = 'static/account.json'
 email_file = 'static/email.json'
@@ -86,6 +84,7 @@ def del_ocr():#备用
         shutil.rmtree(folder_path)
     except OSwarning as e:
         print(f"warning: {e.strwarning}")
+        os.makedirs("ocr", exist_ok=True)
 def save_account():
     with open(account_file, 'w') as f:
         json.dump(f"'username': {username}, 'email': {email}", f)
@@ -243,9 +242,8 @@ def task():
 if __name__ == "__main__":
     global times, input_token, input_chatid
     times = 1
-    del_ocr()
     os.makedirs("static", exist_ok=True)
-    os.makedirs("ocr", exist_ok=True)
+    del_ocr()
     show_ip()
     check_botconfig()
     num = int(input("输入线程数:"))
