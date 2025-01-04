@@ -17,6 +17,8 @@ from requests.exceptions import JSONDecodeError
 from pygame import mixer
 import threading
 import shutil
+os.makedirs("static", exist_ok=True)
+os.makedirs("ocr", exist_ok=True)
 config_file = 'static/config.json'
 account_file = 'static/account.json'
 email_file = 'static/email.json'
