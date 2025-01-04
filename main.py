@@ -243,6 +243,7 @@ if __name__ == "__main__":
     global times, input_token, input_chatid
     times = 1
     os.makedirs("static", exist_ok=True)
+    os.makedirs("ocr", exist_ok=True)
     del_ocr()
     show_ip()
     check_botconfig()
