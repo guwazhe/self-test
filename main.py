@@ -17,7 +17,7 @@ from requests.exceptions import JSONDecodeError
 from pygame import mixer
 import threading
 import shutil
-global input_token, input_chatid
+global input_token, input_chatid, input_email
 os.makedirs("static", exist_ok=True)
 os.makedirs("ocr", exist_ok=True)
 config_file = 'static/config.json'
