@@ -126,24 +126,24 @@ def main(input_email: str):
     print(f"线程{num}启动")
     while True:
         try:
-            User_Agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+            User_Agent = "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36"
             Cookie = "csrftoken={}"
             url1 = "https://www.serv00.com/offer/create_new_account"
             headers = {"User-Agent": User_Agent}
             captcha_url = "https://www.serv00.com/captcha/image/{}/"
-            header2 = {"Cookie": Cookie, "User-Agent": User_Agent}
+            header2 = {""User-Agent": User_Agent, Cookie": Cookie}
             url3 = "https://www.serv00.com/offer/create_new_account.json"
             header3 = {
                 "content-length": "207",
-                "x-requested-with": "XMLHttpRequest",
-                "User-Agent": User_Agent,
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "accept": "*/*",
                 "origin": "https://www.serv00.com",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-dest": "empty",
-                "Referer": "https://www.serv00.com/offer/create_new_account",
-                "Cookie": Cookie,  
+                "x-requested-with": "XMLHttpRequest",
+                "user-agent": User_Agent,
+                "content-type": "application/x-www-form-urlencoded; charset\u003dUTF-8",
+                "referer": "https://www.serv00.com/offer/create_new_account",
+                "accept-encoding": "gzip, deflate",
+                "accept-language": "en-US;q\u003d0.8,en;q\u003d0.7",
+                "cookie": Cookie,  
             }
             errors = 1
             email = input_email
