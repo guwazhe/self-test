@@ -64,6 +64,7 @@ def check_botconfig():
             input_chatid = get_valid_input(f"\033[1;94m请输入Telegram Chat ID:\033[0m", lambda x: x.isdigit() and int(x) > 0, "无效的ChatID,请输入一个正整数.")
             with open(config_file, 'w') as f:
                 json.dump({'token': input_token.strip(), 'chatid': input_chatid.strip()}, f)
+    return
 def get_valid_input(prompt, validation_func, warning_msg):
     while True:
         user_input = input(f"{get_input_prompt()}{prompt}")
@@ -75,7 +76,8 @@ def play_music():
     mixer.music.load('music.mp3')
     mixer.music.play()
     time.sleep(10)
-    mixer.music.stop()  
+    mixer.music.stop()
+    return
 def renew_ocr():#备用
     folder_path = 'ocr'
     try:
@@ -83,9 +85,11 @@ def renew_ocr():#备用
         os.makedirs("ocr", exist_ok=True)
     except OSError as e:
         os.makedirs("ocr", exist_ok=True)
+        return
 def save_account():
     with open(account_file, 'w') as f:
         json.dump(f"'username': {username}, 'email': {email}", f)
+        return
 def if_continue():
     global input_email
     key = input("\n继续上次任务请输入y:")
@@ -111,6 +115,7 @@ def show_ip():
     os.system("cls" if os.name == "nt" else "clear")
     response = requests.get('https://ping0.cc/geo', verify=False)
     print(f"\n=============================\n{response.text[:200]}\n=============================")
+    return
 def main(input_email: str):
     num = threading.current_thread().ident
     sended = False
@@ -233,6 +238,7 @@ def main(input_email: str):
 def task():
     global input_email
     main(input_email)
+    return
 if __name__ == "__main__":
     global times, input_token, input_chatid, input_email
     times = 1
