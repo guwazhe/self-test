@@ -75,9 +75,8 @@ def play_music():
     mixer.music.load('music.mp3')
     mixer.music.play()
     time.sleep(10)
-    mixer.music.stop()  
-    return
-def del_ocr():#备用
+    mixer.music.stop()
+def renew_ocr():#备用
     folder_path = 'ocr'
     try:
         shutil.rmtree(folder_path)
@@ -113,7 +112,6 @@ def show_ip():
     os.system("cls" if os.name == "nt" else "clear")
     response = requests.get('https://ping0.cc/geo', verify=False)
     print(f"\n=============================\n{response.text[:200]}\n=============================")
-    input_email = if_continue()
 def main(input_email: str):
     num = threading.current_thread().ident
     sended = False
@@ -129,12 +127,13 @@ def main(input_email: str):
             header2 = {"Cookie": Cookie, "User-Agent": User_Agent}
             url3 = "https://www.serv00.com/offer/create_new_account.json"
             header3 = {
+                "content-length": "207",
                 "x-requested-with": "XMLHttpRequest",
                 "User-Agent": User_Agent,
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                 "origin": "https://www.serv00.com",
                 "Referer": "https://www.serv00.com/offer/create_new_account",
-                "Cookie": Cookie,
+                "Cookie": Cookie
             }
             errors = 1
             email = input_email
@@ -233,15 +232,16 @@ def main(input_email: str):
             logger.warning(f"发生异常:{e},正在退出任务...")
             return
 def task():
-    global input_email
     main(input_email)
 if __name__ == "__main__":
-    global times, input_token, input_chatid
+    global times, input_token, input_chatid, input_email
     times = 1
+    renew_ocr()
     os.makedirs("static", exist_ok=True)
-    del_ocr()
+    os.makedirs("ocr", exist_ok=True)
     show_ip()
-    check_botconfig()
+    input_email = if_continue()
+    input_token, input_chatid = check_botconfig()
     num = int(input("输入线程数:"))
     threads = []
     for i in range(num):
