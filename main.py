@@ -127,16 +127,12 @@ def main(input_email: str):
             header2 = {"Cookie": Cookie, "User-Agent": User_Agent}
             url3 = "https://www.serv00.com/offer/create_new_account.json"
             header3 = {
-                "content-length": "207",
                 "x-requested-with": "XMLHttpRequest",
                 "User-Agent": User_Agent,
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                 "origin": "https://www.serv00.com",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-dest": "empty",
                 "Referer": "https://www.serv00.com/offer/create_new_account",
-                "Cookie": Cookie,  
+                "Cookie": Cookie
             }
             errors = 1
             email = input_email
@@ -241,9 +237,6 @@ def task():
     main(input_email)
 if __name__ == "__main__":
     global times, sended
-    if "OMP_NUM_THREADS" in os.environ:
-        sess_opts.inter_op_num_threads = int(os.environ["OMP_NUM_THREADS"])
-        sess_opts.intra_op_num_threads = int(os.environ["OMP_NUM_THREADS"])
     os.makedirs("static", exist_ok=True)
     times = 1
     sended = True
