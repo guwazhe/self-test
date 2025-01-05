@@ -52,19 +52,18 @@ def generate_random_username():
     return random_login
 def check_botconfig():
     global input_token, input_chatid
-    if os.path.exists(config_file):
-        try:
-            with open(config_file, 'r') as f:
-                config = json.load(f)
-                if config: return config['token'], config['chatid']
-        except (FileNotFoundError, json.JSONDecodeError):
-            logger.warning("请输入相关参数\n");
-            input_token = input(f"{get_input_prompt()}\033[1;94m请输入Telegram Bot Token [默认使用 @Serv00Reg_Bot]:\033[0m")
-            if input_token == "": input_token = '7594103635:AAEoQKB_ApJgDbfoVJm-gwW6e0VVS_a5Dl4'
-            input_chatid = get_valid_input(f"\033[1;94m请输入Telegram Chat ID:\033[0m", lambda x: x.isdigit() and int(x) > 0, "无效的ChatID,请输入一个正整数.")
-            with open(config_file, 'w') as f:
-                json.dump({'token': input_token.strip(), 'chatid': input_chatid.strip()}, f)
-            return input_token, input_chatid
+    try:
+        with open(config_file, 'r') as f:
+            config = json.load(f)
+            if config: return config['token'], config['chatid']
+    except (FileNotFoundError, json.JSONDecodeError):
+        logger.warning("请输入相关参数\n");
+        input_token = input(f"{get_input_prompt()}\033[1;94m请输入Telegram Bot Token [默认使用 @Serv00Reg_Bot]:\033[0m")
+        if input_token == "": input_token = '7594103635:AAEoQKB_ApJgDbfoVJm-gwW6e0VVS_a5Dl4'
+        input_chatid = get_valid_input(f"\033[1;94m请输入Telegram Chat ID:\033[0m", lambda x: x.isdigit() and int(x) > 0, "无效的ChatID,请输入一个正整数.")
+        with open(config_file, 'w') as f:
+            json.dump({'token': input_token.strip(), 'chatid': input_chatid.strip()}, f)
+        return input_token, input_chatid
 def get_valid_input(prompt, validation_func, warning_msg):
     while True:
         user_input = input(f"{get_input_prompt()}{prompt}")
