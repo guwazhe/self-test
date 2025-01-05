@@ -52,18 +52,20 @@ def generate_random_username():
     return random_login
 def check_botconfig():
     global input_token, input_chatid
-    if os.path.exists(config_file):
-        try:
-            with open(config_file, 'r') as f:
-                config = json.load(f)
-                if config: return config['token'], config['chatid']
-        except (FileNotFoundError, json.JSONDecodeError):
-            logger.warning("请输入相关参数\n");
-            input_token = input(f"{get_input_prompt()}\033[1;94m请输入Telegram Bot Token [默认使用 @Serv00Reg_Bot]:\033[0m")
-            if input_token == "": input_token = '7594103635:AAEoQKB_ApJgDbfoVJm-gwW6e0VVS_a5Dl4'
-            input_chatid = get_valid_input(f"\033[1;94m请输入Telegram Chat ID:\033[0m", lambda x: x.isdigit() and int(x) > 0, "无效的ChatID,请输入一个正整数.")
-            with open(config_file, 'w') as f:
-                json.dump({'token': input_token.strip(), 'chatid': input_chatid.strip()}, f)
+    try:
+        with open(config_file, 'r') as f:
+            config = json.load(f)
+            if config:
+                input_token = config['token']
+                input_chatid = config['chatid']
+        return
+    except (FileNotFoundError, json.JSONDecodeError):
+        logger.warning("请输入相关参数\n");
+        input_token = input(f"{get_input_prompt()}\033[1;94m请输入Telegram Bot Token [默认使用 @Serv00Reg_Bot]:\033[0m")
+        if input_token == "": input_token = '7594103635:AAEoQKB_ApJgDbfoVJm-gwW6e0VVS_a5Dl4'
+        input_chatid = get_valid_input(f"\033[1;94m请输入Telegram Chat ID:\033[0m", lambda x: x.isdigit() and int(x) > 0, "无效的ChatID,请输入一个正整数.")
+        with open(config_file, 'w') as f:
+            json.dump({'token': input_token.strip(), 'chatid': input_chatid.strip()}, f)
     return
 def get_valid_input(prompt, validation_func, warning_msg):
     while True:
@@ -76,16 +78,16 @@ def play_music():
     mixer.music.load('music.mp3')
     mixer.music.play()
     time.sleep(10)
-    mixer.music.stop()
+    mixer.music.stop()  
     return
-def renew_ocr():#备用
+def renew_ocr():
     folder_path = 'ocr'
     try:
         shutil.rmtree(folder_path)
         os.makedirs("ocr", exist_ok=True)
     except OSError as e:
         os.makedirs("ocr", exist_ok=True)
-        return
+    return
 def save_account():
     with open(account_file, 'w') as f:
         json.dump(f"'username': {username}, 'email': {email}", f)
@@ -100,7 +102,7 @@ def if_continue():
                     temp = json.load(f)
                     if temp['email']:
                         input_email = temp['email']
-                return input_email
+                return
             except (FileNotFoundError, json.JSONDecodeError):
                 print("未检测到相关配置\n")
     while True:
@@ -115,10 +117,8 @@ def show_ip():
     os.system("cls" if os.name == "nt" else "clear")
     response = requests.get('https://ping0.cc/geo', verify=False)
     print(f"\n=============================\n{response.text[:200]}\n=============================")
-    return
 def main(input_email: str):
     num = threading.current_thread().ident
-    sended = False
     global input_token, input_chatid, username, email, first_name, times
     print(f"线程{num}启动")
     while True:
@@ -236,11 +236,9 @@ def main(input_email: str):
             logger.warning(f"发生异常:{e},正在退出任务...")
             return
 def task():
-    global input_email
     main(input_email)
-    return
 if __name__ == "__main__":
-    global times, input_token, input_chatid, input_email
+    global times, input_token, input_chatid
     times = 1
     renew_ocr()
     os.makedirs("static", exist_ok=True)
