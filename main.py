@@ -83,8 +83,8 @@ def renew_ocr():
     try:
         shutil.rmtree(folder_path)
         os.makedirs("ocr", exist_ok=True)
-    except OSwarning as e:
-        print(f"warning: {e.strwarning}")
+    except OSError as e:
+        os.makedirs("ocr", exist_ok=True)
 def save_account():
     with open(account_file, 'w') as f:
         json.dump(f"'username': {username}, 'email': {email}", f)
@@ -199,7 +199,7 @@ def main(input_email: str):
                                 logger.warning(f"用户名：{username}已经被注册过")
                                 break
                             elif content.get("username") and content["username"][0] == "The account limit on the server has been reached - please try again later!":
-                                logger.warning(f"名额已满，期待再次开放吧")
+                                logger.warning(f"名额已满，期待再次开放吧")  
                                 return
                             elif content.get("email") and content["email"][0] == "Enter a valid email address.":
                                 logger.error("无效的邮箱,请重新输入.")
