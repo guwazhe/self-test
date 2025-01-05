@@ -17,6 +17,7 @@ from requests.exceptions import JSONDecodeError
 from pygame import mixer
 import threading
 import shutil
+global times, input_token, input_chatid, input_email
 config_file = 'static/config.json'
 account_file = 'static/account.json'
 email_file = 'static/email.json'
@@ -75,7 +76,7 @@ def play_music():
     mixer.music.load('music.mp3')
     mixer.music.play()
     time.sleep(10)
-    mixer.music.stop()
+    mixer.music.stop()  
 def renew_ocr():#备用
     folder_path = 'ocr'
     try:
@@ -240,8 +241,8 @@ if __name__ == "__main__":
     os.makedirs("static", exist_ok=True)
     os.makedirs("ocr", exist_ok=True)
     show_ip()
-    if_continue()
-    check_botconfig()
+    input_email = if_continue()
+    input_token, input_chatid = check_botconfig()
     num = int(input("输入线程数:"))
     threads = []
     for i in range(num):
