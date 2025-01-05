@@ -138,11 +138,11 @@ def main(input_email: str):
                 "accept": "*/*",
                 "origin": "https://www.serv00.com",
                 "x-requested-with": "XMLHttpRequest",
-                "user-agent": User_Agent,
-                "content-type": "application/x-www-form-urlencoded; charset\u003dUTF-8",
+                "User-Agent": User_Agent,
+                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
                 "referer": "https://www.serv00.com/offer/create_new_account",
                 "accept-encoding": "gzip, deflate",
-                "accept-language": "en-US;q\u003d0.8,en;q\u003d0.7",
+                "accept-language": "en-US;q=0.8,en;q=0.7",
                 "Cookie": Cookie
             }
             errors = 1
