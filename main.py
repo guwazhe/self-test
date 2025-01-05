@@ -240,7 +240,7 @@ if __name__ == "__main__":
     os.makedirs("static", exist_ok=True)
     del_ocr()
     show_ip()
-    input_token, input_chatid = check_botconfig()
+    check_botconfig()
     num = int(input("输入线程数:"))
     threads = []
     for i in range(num):
