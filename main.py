@@ -17,7 +17,7 @@ from requests.exceptions import JSONDecodeError
 from pygame import mixer
 import threading
 import shutil
-global times, input_token, input_chatid, input_email
+global times, sended
 config_file = 'static/config.json'
 account_file = 'static/account.json'
 email_file = 'static/email.json'
@@ -52,21 +52,19 @@ def generate_random_username():
     return random_login
 def check_botconfig():
     global input_token, input_chatid
-    try:
-        with open(config_file, 'r') as f:
-            config = json.load(f)
-            if config:
-                input_token = config['token']
-                input_chatid = config['chatid']
-        return
-    except (FileNotFoundError, json.JSONDecodeError):
-        logger.warning("请输入相关参数\n");
-        input_token = input(f"{get_input_prompt()}\033[1;94m请输入Telegram Bot Token [默认使用 @Serv00Reg_Bot]:\033[0m")
-        if input_token == "": input_token = '7594103635:AAEoQKB_ApJgDbfoVJm-gwW6e0VVS_a5Dl4'
-        input_chatid = get_valid_input(f"\033[1;94m请输入Telegram Chat ID:\033[0m", lambda x: x.isdigit() and int(x) > 0, "无效的ChatID,请输入一个正整数.")
-        with open(config_file, 'w') as f:
-            json.dump({'token': input_token.strip(), 'chatid': input_chatid.strip()}, f)
-    return
+    if os.path.exists(config_file):
+        try:
+            with open(config_file, 'r') as f:
+                config = json.load(f)
+                if config: return config['token'], config['chatid']
+        except (FileNotFoundError, json.JSONDecodeError):
+            logger.warning("请输入相关参数\n");
+            input_token = input(f"{get_input_prompt()}\033[1;94m请输入Telegram Bot Token [默认使用 @Serv00Reg_Bot]:\033[0m")
+            if input_token == "": input_token = '7594103635:AAEoQKB_ApJgDbfoVJm-gwW6e0VVS_a5Dl4'
+            input_chatid = get_valid_input(f"\033[1;94m请输入Telegram Chat ID:\033[0m", lambda x: x.isdigit() and int(x) > 0, "无效的ChatID,请输入一个正整数.")
+            with open(config_file, 'w') as f:
+                json.dump({'token': input_token.strip(), 'chatid': input_chatid.strip()}, f)
+            return input_token, input_chatid
 def get_valid_input(prompt, validation_func, warning_msg):
     while True:
         user_input = input(f"{get_input_prompt()}{prompt}")
@@ -85,15 +83,13 @@ def renew_ocr():
     try:
         shutil.rmtree(folder_path)
         os.makedirs("ocr", exist_ok=True)
-    except OSError as e:
-        os.makedirs("ocr", exist_ok=True)
-    return
+    except OSwarning as e:
+        print(f"warning: {e.strwarning}")
 def save_account():
     with open(account_file, 'w') as f:
         json.dump(f"'username': {username}, 'email': {email}", f)
-        return
+    return username, email
 def if_continue():
-    global input_email
     key = input("\n继续上次任务请输入y:")
     if key == 'y':
         if os.path.exists(email_file):
@@ -102,7 +98,7 @@ def if_continue():
                     temp = json.load(f)
                     if temp['email']:
                         input_email = temp['email']
-                return
+                return input_email
             except (FileNotFoundError, json.JSONDecodeError):
                 print("未检测到相关配置\n")
     while True:
@@ -112,15 +108,15 @@ def if_continue():
             continue
         with open(email_file, 'w') as f:
             json.dump({'email': input_email}, f)
-            return
+        return input_email
 def show_ip():
+    global input_email
     os.system("cls" if os.name == "nt" else "clear")
     response = requests.get('https://ping0.cc/geo', verify=False)
     print(f"\n=============================\n{response.text[:200]}\n=============================")
+    input_email = if_continue()
 def main(input_email: str):
-    num = threading.current_thread().ident
-    global input_token, input_chatid, username, email, first_name, times
-    print(f"线程{num}启动")
+    global input_token, input_chatid, username, email, first_name, times, sended
     while True:
         try:
             User_Agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
@@ -136,8 +132,11 @@ def main(input_email: str):
                 "User-Agent": User_Agent,
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                 "origin": "https://www.serv00.com",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-dest": "empty",
                 "Referer": "https://www.serv00.com/offer/create_new_account",
-                "Cookie": Cookie
+                "Cookie": Cookie,  
             }
             errors = 1
             email = input_email
@@ -199,6 +198,9 @@ def main(input_email: str):
                             elif content.get("username") and content["username"][0] == "An account with the given username already exists - please choose a different login.":
                                 logger.warning(f"用户名：{username}已经被注册过")
                                 break
+                            elif content.get("username") and content["username"][0] == "The account limit on the server has been reached - please try again later!":
+                                logger.warning(f"名额已满，期待再次开放吧"  
+                                return
                             elif content.get("email") and content["email"][0] == "Enter a valid email address.":
                                 logger.error("无效的邮箱,请重新输入.")
                                 return
@@ -210,20 +212,20 @@ def main(input_email: str):
                                 username, email = save_account()
                                 with open(log_file, 'w') as f:
                                     json.dump(f"{resp.headers}\n,{content}", f)
-                                play_music()
-                                asyncio.run(send_message(f"Email: {input_email}\nUserName: {username}\n未知返回错误"))
-                                asyncio.run(send_message(f"{resp.headers}\n{content}"))
+                                if sended == True:
+                                    asyncio.run(send_message(f"Email: {input_email}\nUserName: {username}\n未知返回错误\n{resp.headers}\n{content}"))
+                                    sended = False
+                                    play_music()
                                 return
                         elif resp.status_code == 200:
                             logger.success(f"账户 {username} {input_email}已成功创建!")
                             username, email = save_account()
                             with open(log_file, 'w') as f:
                                 json.dump(f"{resp.headers}\n,{content}", f)
-                            play_music()
-                            if sended == False:
-                                asyncio.run(send_message(f"Success!\nEmail: {input_email}\nUserName: {username}"))
-                                asyncio.run(send_message(f"{resp.headers}\n{content}"))
-                                sended = True
+                            if sended == True:
+                                asyncio.run(send_message(f"Success!\nEmail: {input_email}\nUserName: {username}\n{resp.headers}\n{content}"))
+                                sended = False
+                                play_music()
                             return
                         else:
                             print("未知返回状态码")
@@ -238,13 +240,12 @@ def main(input_email: str):
 def task():
     main(input_email)
 if __name__ == "__main__":
-    global times, input_token, input_chatid
-    times = 1
-    renew_ocr()
+    global times, sended
     os.makedirs("static", exist_ok=True)
-    os.makedirs("ocr", exist_ok=True)
+    times = 1
+    sended = True
+    renew_ocr()
     show_ip()
-    if_continue()
     check_botconfig()
     num = int(input("输入线程数:"))
     threads = []
@@ -252,6 +253,7 @@ if __name__ == "__main__":
         thread = threading.Thread(target=task)
         threads.append(thread)
         thread.start()
+        print(f"线程{i + 1}启动")
         time.sleep(random.uniform(0.5, 1))
     for thread in threads:
         thread.join()
