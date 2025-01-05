@@ -233,6 +233,7 @@ def main(input_email: str):
             logger.warning(f"发生异常:{e},正在退出任务...")
             return
 def task():
+    global input_email
     main(input_email)
 if __name__ == "__main__":
     global times, input_token, input_chatid
