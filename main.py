@@ -142,7 +142,7 @@ def main(input_email: str):
                 "referer": "https://www.serv00.com/offer/create_new_account",
                 "accept-encoding": "gzip, deflate",
                 "accept-language": "en-US;q=0.8,en;q=0.7",
-                "cookie": Cookie
+                "cookie": Cookie,
             }
             errors = 1
             email = input_email
