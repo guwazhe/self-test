@@ -134,16 +134,15 @@ def main(input_email: str):
             header2 = {"User-Agent": User_Agent, "Cookie": Cookie}
             url3 = "https://www.serv00.com/offer/create_new_account.json"
             header3 = {
-                "content-length": "207",
                 "accept": "*/*",
                 "origin": "https://www.serv00.com",
                 "x-requested-with": "XMLHttpRequest",
-                "User-Agent": User_Agent,
+                "user-agent": User_Agent,
                 "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
                 "referer": "https://www.serv00.com/offer/create_new_account",
                 "accept-encoding": "gzip, deflate",
                 "accept-language": "en-US;q=0.8,en;q=0.7",
-                "Cookie": Cookie
+                "cookie": Cookie
             }
             errors = 1
             email = input_email
@@ -183,7 +182,7 @@ def main(input_email: str):
                         continue
                     try:
                         data = f"csrfmiddlewaretoken={csrftoken}&first_name={first_name}&last_name={last_name}&username={username}&email={quote(email)}&captcha_0={captcha_0}&captcha_1={captcha_1}&question=free&tos=on"
-                        resp = session.post(url=url3, headers=dict(header3, **{"Cookie": header3["Cookie"].format(csrftoken)}), data=data, verify=False)
+                        resp = session.post(url=url3, headers=dict(header3, **{"cookie": header3["cookie"].format(csrftoken)}), data=data, verify=False)
                         content = resp.json()
                         logger.info(f"{username} {email}")
                         if resp.status_code == 403:
