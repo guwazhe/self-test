@@ -233,6 +233,7 @@ def main(input_email: str):
             logger.warning(f"发生异常:{e},正在退出任务...")
             return
 def task():
+    global input_mail
     main(input_email)
 if __name__ == "__main__":
     global times, input_token, input_chatid, input_email
@@ -242,7 +243,7 @@ if __name__ == "__main__":
     os.makedirs("ocr", exist_ok=True)
     show_ip()
     input_email = if_continue()
-    input_token, input_chatid = check_botconfig()
+    check_botconfig()
     num = int(input("输入线程数:"))
     threads = []
     for i in range(num):
