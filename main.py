@@ -235,7 +235,7 @@ def main(input_email: str):
 def task():
     main(input_email)
 if __name__ == "__main__":
-    global times
+    global times, input_token, input_chatid
     times = 1
     os.makedirs("static", exist_ok=True)
     del_ocr()
