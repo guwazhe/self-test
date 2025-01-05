@@ -17,9 +17,6 @@ from requests.exceptions import JSONDecodeError
 from pygame import mixer
 import threading
 import shutil
-global input_token, input_chatid, input_email
-os.makedirs("static", exist_ok=True)
-os.makedirs("ocr", exist_ok=True)
 config_file = 'static/config.json'
 account_file = 'static/account.json'
 email_file = 'static/email.json'
@@ -80,15 +77,14 @@ def play_music():
     time.sleep(10)
     mixer.music.stop()  
     return
-def renew_ocr():#备用
+def del_ocr():#备用
     folder_path = 'ocr'
     try:
         shutil.rmtree(folder_path)
         os.makedirs("ocr", exist_ok=True)
-        print("执行删除")
-    except OSError as e:
+    except OSwarning as e:
+        print(f"warning: {e.strwarning}")
         os.makedirs("ocr", exist_ok=True)
-        print("执行创建")
 def save_account():
     with open(account_file, 'w') as f:
         json.dump(f"'username': {username}, 'email': {email}", f)
@@ -126,23 +122,20 @@ def main(input_email: str):
     print(f"线程{num}启动")
     while True:
         try:
-            User_Agent = "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36"
+            User_Agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
             Cookie = "csrftoken={}"
             url1 = "https://www.serv00.com/offer/create_new_account"
             headers = {"User-Agent": User_Agent}
             captcha_url = "https://www.serv00.com/captcha/image/{}/"
-            header2 = {"User-Agent": User_Agent, "Cookie": Cookie}
+            header2 = {"Cookie": Cookie, "User-Agent": User_Agent}
             url3 = "https://www.serv00.com/offer/create_new_account.json"
             header3 = {
-                "accept": "*/*",
-                "origin": "https://www.serv00.com",
                 "x-requested-with": "XMLHttpRequest",
-                "user-agent": User_Agent,
-                "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "referer": "https://www.serv00.com/offer/create_new_account",
-                "accept-encoding": "gzip, deflate",
-                "accept-language": "en-US;q=0.8,en;q=0.7",
-                "cookie": Cookie,
+                "User-Agent": User_Agent,
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "origin": "https://www.serv00.com",
+                "Referer": "https://www.serv00.com/offer/create_new_account",
+                "Cookie": Cookie,
             }
             errors = 1
             email = input_email
@@ -160,7 +153,7 @@ def main(input_email: str):
                 headers = resp.headers
                 csrftoken = re.findall(r"csrftoken=(\w+);", headers.get("set-cookie"))[0]
                 header2["Cookie"] = header2["Cookie"].format(csrftoken)
-                header3["cookie"] = header3["cookie"].format(csrftoken)
+                header3["Cookie"] = header3["Cookie"].format(csrftoken)
                 captcha_0 = re.findall(r'id=\"id_captcha_0\" name=\"captcha_0\" value=\"(\w+)\">', content)[0]
                 captcha_retry = 0
                 while True:
@@ -182,7 +175,7 @@ def main(input_email: str):
                         continue
                     try:
                         data = f"csrfmiddlewaretoken={csrftoken}&first_name={first_name}&last_name={last_name}&username={username}&email={quote(email)}&captcha_0={captcha_0}&captcha_1={captcha_1}&question=free&tos=on"
-                        resp = session.post(url=url3, headers=dict(header3, **{"cookie": header3["cookie"].format(csrftoken)}), data=data, verify=False)
+                        resp = session.post(url=url3, headers=dict(header3, **{"Cookie": header3["Cookie"].format(csrftoken)}), data=data, verify=False)
                         content = resp.json()
                         logger.info(f"{username} {email}")
                         if resp.status_code == 403:
@@ -243,11 +236,12 @@ def main(input_email: str):
 def task():
     main(input_email)
 if __name__ == "__main__":
-    global times, input_token, input_chatid
+    global times
     times = 1
-    renew_ocr()
+    os.makedirs("static", exist_ok=True)
+    del_ocr()
     show_ip()
-    check_botconfig()
+    input_token, input_chatid = check_botconfig()
     num = int(input("输入线程数:"))
     threads = []
     for i in range(num):
