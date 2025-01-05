@@ -160,7 +160,7 @@ def main(input_email: str):
                 headers = resp.headers
                 csrftoken = re.findall(r"csrftoken=(\w+);", headers.get("set-cookie"))[0]
                 header2["Cookie"] = header2["Cookie"].format(csrftoken)
-                header3["Cookie"] = header3["Cookie"].format(csrftoken)
+                header3["cookie"] = header3["cookie"].format(csrftoken)
                 captcha_0 = re.findall(r'id=\"id_captcha_0\" name=\"captcha_0\" value=\"(\w+)\">', content)[0]
                 captcha_retry = 0
                 while True:
