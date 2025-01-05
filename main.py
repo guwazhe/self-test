@@ -82,8 +82,7 @@ def del_ocr():#备用
     try:
         shutil.rmtree(folder_path)
         os.makedirs("ocr", exist_ok=True)
-    except OSwarning as e:
-        print(f"warning: {e.strwarning}")
+    except OSError as e:
         os.makedirs("ocr", exist_ok=True)
 def save_account():
     with open(account_file, 'w') as f:
