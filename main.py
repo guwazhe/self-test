@@ -64,7 +64,6 @@ def check_botconfig():
             input_chatid = get_valid_input(f"\033[1;94m请输入Telegram Chat ID:\033[0m", lambda x: x.isdigit() and int(x) > 0, "无效的ChatID,请输入一个正整数.")
             with open(config_file, 'w') as f:
                 json.dump({'token': input_token.strip(), 'chatid': input_chatid.strip()}, f)
-            return input_token, input_chatid
 def get_valid_input(prompt, validation_func, warning_msg):
     while True:
         user_input = input(f"{get_input_prompt()}{prompt}")
@@ -87,8 +86,8 @@ def renew_ocr():#备用
 def save_account():
     with open(account_file, 'w') as f:
         json.dump(f"'username': {username}, 'email': {email}", f)
-    return username, email
 def if_continue():
+    global input_email
     key = input("\n继续上次任务请输入y:")
     if key == 'y':
         if os.path.exists(email_file):
@@ -107,9 +106,7 @@ def if_continue():
             continue
         with open(email_file, 'w') as f:
             json.dump({'email': input_email}, f)
-        return input_email
 def show_ip():
-    global input_email
     os.system("cls" if os.name == "nt" else "clear")
     response = requests.get('https://ping0.cc/geo', verify=False)
     print(f"\n=============================\n{response.text[:200]}\n=============================")
@@ -233,7 +230,7 @@ def main(input_email: str):
             logger.warning(f"发生异常:{e},正在退出任务...")
             return
 def task():
-    global input_mail
+    global input_email
     main(input_email)
 if __name__ == "__main__":
     global times, input_token, input_chatid, input_email
@@ -242,7 +239,7 @@ if __name__ == "__main__":
     os.makedirs("static", exist_ok=True)
     os.makedirs("ocr", exist_ok=True)
     show_ip()
-    input_email = if_continue()
+    if_continue()
     check_botconfig()
     num = int(input("输入线程数:"))
     threads = []
