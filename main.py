@@ -131,7 +131,7 @@ def main(input_email: str):
             url1 = "https://www.serv00.com/offer/create_new_account"
             headers = {"User-Agent": User_Agent}
             captcha_url = "https://www.serv00.com/captcha/image/{}/"
-            header2 = {""User-Agent": User_Agent, Cookie": Cookie}
+            header2 = {"User-Agent": User_Agent, "Cookie": Cookie}
             url3 = "https://www.serv00.com/offer/create_new_account.json"
             header3 = {
                 "content-length": "207",
