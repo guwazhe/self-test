@@ -106,6 +106,7 @@ def if_continue():
             continue
         with open(email_file, 'w') as f:
             json.dump({'email': input_email}, f)
+            return
 def show_ip():
     os.system("cls" if os.name == "nt" else "clear")
     response = requests.get('https://ping0.cc/geo', verify=False)
