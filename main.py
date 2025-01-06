@@ -152,13 +152,14 @@ def main(input_email: str):
                 header3["Cookie"] = header3["Cookie"].format(csrftoken)
                 captcha_0 = re.findall(r'id=\"id_captcha_0\" name=\"captcha_0\" value=\"(\w+)\">', content)[0]
                 captcha_retry = 0
+                init_ddddocr = ddddocr.DdddOcr(show_ad=False)
                 while True:
                     try:
                         resp = session.get(url=captcha_url.format(captcha_0), headers=dict(header2, **{"Cookie": header2["Cookie"].format(csrftoken)}), verify=False)
                         content = resp.content
                         with open(f"ocr/{username}{num}.jpg", "wb") as f:
                             f.write(content)
-                        captcha_1 = ddddocr.DdddOcr(show_ad=False).classification(content).upper()
+                        captcha_1 = init_ddddocr.classification(content).upper()
                         if bool(re.match(r'^[a-zA-Z0-9]{4}$', captcha_1)):
                             pass
                         else:
