@@ -170,6 +170,7 @@ def main(input_email: str):
                     except requests.RequestException as e:
                         logger.info(f"{e}获取验证码异常")
                         continue
+                    time.sleep(random.uniform(0.2, 0.3))
                     try:
                         data = f"csrfmiddlewaretoken={csrftoken}&first_name={first_name}&last_name={last_name}&username={username}&email={quote(email)}&captcha_0={captcha_0}&captcha_1={captcha_1}&question=free&tos=on"
                         resp = session.post(url=url3, headers=dict(header3, **{"Cookie": header3["Cookie"].format(csrftoken)}), data=data, verify=False)
